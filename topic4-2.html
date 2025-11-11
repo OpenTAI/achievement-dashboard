@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基于不可学样本的分割数据保护</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="topic4-2.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="page-title">基于不可学样本的分割数据保护</div>
+      <div class="user-section">
+        <div class="user-avatar">U</div>
+        <button class="login-btn" onclick="toggleDropdown()">登录</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" onclick="logout()">退出登录</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container-fluid">
+        <div class="intro-title d-flex justify-content-between align-items-center">
+          <div class="d-flex flex-wrap gap-2" style="width: 20%">
+            <!-- <div class="qr-code-container logo">
+              <img src="images/topic4/achievement2/collaborator1.svg" alt="UnSeg QR Code" />
+            </div>
+            <div class="qr-code-container logo">
+              <img src="images/topic4/achievement2/collaborator2.png" alt="UnSeg QR Code" />
+            </div>
+            <div class="qr-code-container logo">
+              <img src="images/topic4/achievement2/collaborator3.png" alt="UnSeg QR Code" />
+            </div>
+            <div class="qr-code-container logo" style="width: 50%;">
+              <img src="images/topic4/achievement2/conference.svg" alt="UnSeg QR Code" />
+            </div> -->
+          </div>
+          <h2>UnSeg: 用于分割数据保护的通用不可学样本生成器</h2>
+          <div class="qr-logos-row" style="width: 15%">
+            <div class="qr-code-section">
+              <div
+                class="qr-code-container link"
+                onclick="openLink('https://github.com/sunye23/UnSeg')"
+              >
+                <img src="images/topic4/achievement2/github-qr-code.png" alt="UnSeg QR Code" />
+              </div>
+              <div class="qr-code-label">算法工具</div>
+            </div>
+            <div class="qr-code-section">
+              <div
+                class="qr-code-container link"
+                onclick="openLink('https://arxiv.org/abs/2410.09909')"
+              >
+                <img src="images/topic4/achievement2/qr-code.png" alt="UnSeg QR Code" />
+              </div>
+              <div class="qr-code-label">论文详情</div>
+            </div>
+          </div>
+        </div>
+        <!-- Introduction Section -->
+        <div class="introduction-section d-flex">
+          <div class="intro-image-container w-50 p-4 d-flex flex-column justify-content-center">
+            <img
+              src="images/topic4/achievement2/unseg-overview2.png"
+              alt="UnSeg Framework Overview"
+              class="intro-image"
+            />
+          </div>
+
+          <div class="intro-text-container w-50">
+            <p class="intro-description">
+              什么是不可学习样本？定义：不可学习样本（Unlearnable
+              Examples，简称UEs）通过在原始图像数据上添加人眼不可见的扰动，阻止机器学习模型非法滥用私人数据习得有效表征。
+            </p>
+            <p class="intro-description">
+              <span class="fw-bold">UnSeg</span
+              >：首个用于保护图像分割数据的通用不可学噪声生成器。经过UnSeg处理后的图像将不会在深度模型的训练中被模型学到有效信息，从而保护个人隐私数据。经验证，UnSeg的性能超过了领域内多个知名方法如SynPer，AR，CUDA，达到国际领先水平。
+            </p>
+          </div>
+        </div>
+
+        <div class="row main-columns">
+          <div class="col-md-4 main-column">
+            <!-- Left Column Content -->
+            <div class="column-header">
+              <div class="column-title">选择数据集</div>
+            </div>
+
+            <!-- Dataset Selector with Arrow Navigation -->
+            <div class="dataset-selector">
+              <div class="dataset-navigation">
+                <button
+                  class="nav-arrow left-arrow"
+                  id="prevDataset"
+                  onclick="changeDataset('prev')"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path
+                      d="M12 4 L6 10 L12 16"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      fill="none"
+                    />
+                  </svg>
+                </button>
+                <div class="dataset-display" id="currentDataset">cars</div>
+                <button
+                  class="nav-arrow right-arrow"
+                  id="nextDataset"
+                  onclick="changeDataset('next')"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path
+                      d="M8 4 L14 10 L8 16"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      fill="none"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3x3 Image Grid -->
+            <div class="image-grid-3x3" id="imageGrid">
+              <!-- Images will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <div class="col-md-4 main-column d-flex flex-column justify-content-between">
+            <!-- Middle Column Content -->
+            <div class="column-header">
+              <div class="column-title">算法处理</div>
+            </div>
+
+            <!-- Compact Pipeline Visualization -->
+            <div class="pipeline-container">
+              <!-- Input to Processing Stage (Combined) -->
+              <div class="pipeline-stage input-processing-stage">
+                <div class="stage-header">
+                  <div class="stage-subtitle">
+                    <span class="stage-tag">UnSeg</span>
+                    <div class="stage-title">不可学版本图像生成</div>
+                  </div>
+                </div>
+                <div class="stage-content">
+                  <div class="pipeline-flow">
+                    <div class="input-section">
+                      <div class="pipeline-image" id="pipelineInputImage">
+                        <img src="" alt="Input Image" />
+                      </div>
+                      <div class="input-label">原始输入图像</div>
+                    </div>
+
+                    <div class="processing-section">
+                      <div class="horizontal-arrow">
+                        <svg width="40" height="20" viewBox="0 0 40 20">
+                          <path
+                            d="M 5 10 L 35 10 M 30 5 L 35 10 L 30 15"
+                            stroke="#28a745"
+                            stroke-width="2"
+                            fill="none"
+                          />
+                        </svg>
+                      </div>
+                      <div class="processing-animation">
+                        <div class="processing-icon">
+                          <svg width="30" height="30" viewBox="0 0 30 30">
+                            <circle cx="15" cy="15" r="2" fill="#28a745">
+                              <animate
+                                attributeName="r"
+                                values="2;4;2"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                              />
+                            </circle>
+                            <circle
+                              cx="15"
+                              cy="15"
+                              r="8"
+                              fill="none"
+                              stroke="#28a745"
+                              stroke-width="1.5"
+                              opacity="0.6"
+                            >
+                              <animate
+                                attributeName="r"
+                                values="8;12;8"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                              />
+                            </circle>
+                          </svg>
+                        </div>
+                        <div class="processing-text">UnSeg模型处理</div>
+                      </div>
+                      <div class="horizontal-arrow">
+                        <svg width="40" height="20" viewBox="0 0 40 20">
+                          <path
+                            d="M 5 10 L 35 10 M 30 5 L 35 10 L 30 15"
+                            stroke="#28a745"
+                            stroke-width="2"
+                            fill="none"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div class="output-section">
+                      <div class="pipeline-image processed-image" id="pipelineIntermediateImage">
+                        <img src="" alt="Processed Image" />
+                        <div class="noise-overlay"></div>
+                      </div>
+                      <div class="output-label">不可学图像</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vertical Arrow -->
+              <div class="pipeline-arrow-container">
+                <div class="pipeline-arrow">
+                  <svg width="60" height="30" viewBox="0 0 60 30">
+                    <path
+                      d="M 30 5 L 30 25 M 25 20 L 30 25 L 35 20"
+                      stroke="#28a745"
+                      stroke-width="2"
+                      fill="none"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- AI Model Stage -->
+              <div class="pipeline-stage model-stage">
+                <div class="stage-header">
+                  <div class="stage-title">目标模型训练</div>
+                  <div class="stage-subtitle" id="modelTitle">COCO-2017 AI模型</div>
+                </div>
+                <div class="stage-content">
+                  <div class="model-container">
+                    <div class="model-icon">
+                      <img
+                        src="images/topic4/achievement2/training-model.png"
+                        alt="AI Model Icon"
+                      />
+                    </div>
+                    <div class="model-text">深度学习分析</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 main-column d-flex flex-column justify-content-between">
+            <!-- Right Column Content -->
+            <div class="column-header">
+              <div class="column-title" id="performance-column-title">医学数据保护性能</div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="results-container">
+              <!-- Attack Success Rate -->
+              <div class="metric-card clean">
+                <div class="metric-header">
+                  <div class="metric-title clean">原始准确率 (%)</div>
+                  <div class="metric-subtitle">
+                    使用未经保护的数据集训练得到的<span id="metric-subtitle-dataset-clean">UNet++</span>模型的测试指标
+                  </div>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-value clean" id="attackRate">85.3%</div>
+                </div>
+              </div>
+
+              <!-- Defense Effectiveness -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <div class="metric-title unlearnable">不可学准确率 (%)</div>
+                  <div class="metric-subtitle">
+                    使用不可学数据集训练得到的<span id="metric-subtitle-dataset-unlearnable">UNet++</span>模型的测试指标
+                  </div>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-value" id="defenseRate">92.7%</div>
+                  <div class="metric-trend positive" id="improvementRatio"></div>
+                </div>
+              </div>
+
+              <!-- Model Robustness Chart -->
+              <div class="chart-section">
+                <div class="chart-container">
+                  <div id="chart" class="chart-placeholder"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logos">
+        <img src="images/fudan-logo.png" alt="Fudan University" />
+        <img src="images/shangjiao-logo.png" alt="Shanhai Jiaotong University" />
+        <img src="images/nanda-logo.png" alt="Nanjing University" />
+        <img src="images/zheda-logo.png" alt="Zhejiang University" />
+        <img src="images/jinandaxue-logo.png" alt="Jinan University" />
+        <img src="images/huawei-logo.png" alt="Huawei" />
+        <img src="images/baidu-logo.png" alt="Baidu" />
+        <img src="images/icbc-logo.png" alt="ICBC" />
+        <img src="images/yifangjianshu-logo.png" alt="Yifang Jianshu" />
+        <img src="images/huawei-cloud-logo.png" alt="Huawei Cloud" />
+      </div>
+      <div class="footer-text">© 2025 人工智能项目成果一体化展示平台</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/echarts.min.js"></script>
+    <script src="topic4-2.js"></script>
+  </body>
+</html>

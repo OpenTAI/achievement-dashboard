@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数据安全与隐私保护下的机器学习技术</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="page-title">数据安全与隐私保护下的机器学习技术</div>
+      <div class="user-section">
+        <div class="user-avatar">U</div>
+        <button class="login-btn" onclick="toggleDropdown()">登录</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" onclick="logout()">退出登录</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Row 1: Three simple cards -->
+      <div class="card-row">
+        <div class="card">
+          <div class="card-simple">
+            <h3>隐私保护联合建模</h3>
+            <small
+              >如何针对分布式异构环境和差异化隐私保护需求，发展多终端联合学习和数据隔离、加密及扰动等结合的机器学习理论与方法？</small
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-simple">
+            <h3>安全攻击检测防御</h3>
+            <small
+              >如何针对非信任网络环境和多样隐蔽攻击手段，构建具有快速响应能力、良好抗攻击能力的主动检测与防御技术体系？</small
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-simple">
+            <h3>超大规模计算通信</h3>
+            <small
+              >如何针对多元密集计算需求和复杂多变通信条件，实现隐私保护前提下超大规模、多层联动的计算加速与通信优化？</small
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Two cards with headers -->
+      <div class="card-row">
+        <div class="card card-with-header">
+          <div class="card-header">
+            <div class="card-title">异构联合隐私保护机器学习</div>
+          </div>
+          <div class="card-content">
+            <div class="content-grid-container">
+              <div class="content-card content-card-1" onclick="onContentCardClick('federated')">
+                <div class="content-card-header">
+                  <div class="content-card-icon" style="background-color: #4a90e2">
+                    <span>🔗</span>
+                  </div>
+                  <div>
+                    <div class="content-card-title">多样化数据隔离的联合学习架构</div>
+                  </div>
+                </div>
+                <div class="content-card-body">
+                  <ul class="content-card-features">
+                    <li>混合式数据隔离方法</li>
+                    <li>模型分块部署方法</li>
+                    <li>分块训练优化方法</li>
+                  </ul>
+                  <div class="content-card-metrics">
+                    <div class="metric-item">
+                      <span class="metric-value">95%</span>
+                      <div class="metric-label">准确率</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">8</span>
+                      <div class="metric-label">参与节点</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="content-card content-card-2" onclick="onContentCardClick('privacy')">
+                <div class="content-card-header">
+                  <div class="content-card-icon" style="background-color: #28a745">
+                    <span>🔒</span>
+                  </div>
+                  <div>
+                    <div class="content-card-title">兼顾隐私与精度的机器学习方法</div>
+                  </div>
+                </div>
+                <div class="content-card-body">
+                  <ul class="content-card-features">
+                    <li>动态隐私分配的梯度下降方法</li>
+                    <li>总体-细节两流处理方法</li>
+                    <li>面向隐私保护的对抗训练方法</li>
+                  </ul>
+                  <div class="content-card-metrics">
+                    <div class="metric-item">
+                      <span class="metric-value">0.1</span>
+                      <div class="metric-label">隐私参数ε</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">99%</span>
+                      <div class="metric-label">隐私保护</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="content-card content-card-3" onclick="onContentCardClick('encryption')">
+                <div class="content-card-header">
+                  <div class="content-card-icon" style="background-color: #e74c3c">
+                    <span>🛡️</span>
+                  </div>
+                  <div>
+                    <div class="content-card-title">兼顾隐私与泛化的机器学习方法</div>
+                  </div>
+                </div>
+                <div class="content-card-body">
+                  <ul class="content-card-features">
+                    <li>源数据隔离的迁移学习方法</li>
+                    <li>隐私回放的增量学习方法</li>
+                    <li>多源数据同态加密的自监督学习方法</li>
+                  </ul>
+                  <div class="content-card-metrics">
+                    <div class="metric-item">
+                      <span class="metric-value">2048</span>
+                      <div class="metric-label">密钥长度</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">128</span>
+                      <div class="metric-label">安全等级</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="content-card content-card-4" onclick="onContentCardClick('optimization')">
+                <div class="content-card-header">
+                  <div class="content-card-icon" style="background-color: #f39c12">
+                    <span>⚡</span>
+                  </div>
+                  <div>
+                    <div class="content-card-title">大规模联合训练的鲁棒通信协作策略</div>
+                  </div>
+                </div>
+                <div class="content-card-body">
+                  <ul class="content-card-features">
+                    <li>收敛性理论分析</li>
+                    <li>隐私组合放大编解码方法</li>
+                    <li>关键信息提纯方法</li>
+                  </ul>
+                  <div class="content-card-metrics">
+                    <div class="metric-item">
+                      <span class="metric-value">10x</span>
+                      <div class="metric-label">训练加速</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">80%</span>
+                      <div class="metric-label">通信减少</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">95%</span>
+                      <div class="metric-label">模型精度</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="content-card content-card-5" onclick="onContentCardClick('platform')">
+                <div class="content-card-header">
+                  <div class="content-card-icon" style="background-color: #6f42c1">
+                    <span>🌐</span>
+                  </div>
+                  <div>
+                    <div class="content-card-title">异构环境自适应的隐私保护联合学习系统</div>
+                  </div>
+                </div>
+                <div class="content-card-body">
+                  <ul class="content-card-features">
+                    <li>异构环境隐私风险评估</li>
+                    <li>联合训练效率评估</li>
+                    <li>推断精度评估</li>
+                  </ul>
+                  <div class="content-card-metrics">
+                    <div class="metric-item">
+                      <span class="metric-value">50+</span>
+                      <div class="metric-label">部署节点</div>
+                    </div>
+                    <div class="metric-item">
+                      <span class="metric-value">24/7</span>
+                      <div class="metric-label">运行监控</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card card-with-header">
+          <div class="card-header">
+            <div class="card-title">混合加密隐私保护机器学习</div>
+          </div>
+          <div class="card-content">
+            <div class="carousel-container">
+              <div class="carousel-content">
+                <div class="carousel-page active">
+                  <div class="carousel-card">
+                    <div class="carousel-card-title">适配异构联合学习的同态与半同态加密算法</div>
+                    <div class="carousel-card-image-placeholder">
+                      <img src="images/graph1.png" alt="Graph 1" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="carousel-page">
+                  <div class="carousel-card">
+                    <div class="carousel-card-title">面向异质融合数据的加密机器学习理论与技术</div>
+                    <div class="carousel-card-image-placeholder">
+                      <img src="images/graph2.png" alt="Graph 2" />
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-page">
+                  <div class="carousel-card">
+                    <div class="carousel-card-title">
+                      应对海量噪声数据的高效同态加密与机器学习方法
+                    </div>
+                    <div class="carousel-card-image-placeholder">
+                      <img src="images/graph3.png" alt="Graph 3" />
+                    </div>
+                  </div>
+                </div>
+                <div class="carousel-page">
+                  <div class="carousel-card">
+                    <div class="carousel-card-title">软硬件协同的高效异构同态加密库构建</div>
+                    <div class="carousel-card-image-placeholder">
+                      <img src="images/graph4.png" alt="Graph 4" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-indicators">
+                <div class="carousel-indicator active" onclick="goToPage(0)"></div>
+                <div class="carousel-indicator" onclick="goToPage(1)"></div>
+                <div class="carousel-indicator" onclick="goToPage(2)"></div>
+                <div class="carousel-indicator" onclick="goToPage(3)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Single full-width card -->
+      <div class="card-row">
+        <div class="card single-card">
+          <div class="card-header">
+            <div class="card-title">机器学习模型的汇聚与迁移</div>
+          </div>
+          <div class="card-content-split">
+            <div class="pie-chart-container">
+              <div class="pie-chart">
+                <div
+                  class="pie-segment pie-segment-1"
+                  onclick="showPieContent('federated')"
+                  title="联邦学习模型"
+                >
+                  <div class="pie-segment-text">隐私保护</div>
+                </div>
+                <div
+                  class="pie-segment pie-segment-2"
+                  onclick="showPieContent('transfer')"
+                  title="迁移学习模型"
+                >
+                  <div class="pie-segment-text">多域迁移</div>
+                </div>
+                <div
+                  class="pie-segment pie-segment-3"
+                  onclick="showPieContent('ensemble')"
+                  title="集成学习模型"
+                >
+                  <div class="pie-segment-text">异构汇聚</div>
+                </div>
+              </div>
+            </div>
+            <div class="content-area">
+              <div id="federated-content" class="content-details">
+                <h4>隐私保护支持的模型可信汇聚方法</h4>
+                <ul>
+                  <li>数据隐私扰动</li>
+                  <li>汇聚参数加密</li>
+                  <li>多层次隐私保护</li>
+                </ul>
+              </div>
+
+              <div id="transfer-content" class="content-details">
+                <h4>多域泛化的隐私保护迁移学习方法</h4>
+                <ul>
+                  <li>多域数据自适应建模</li>
+                  <li>跨域数据特征平衡</li>
+                  <li>多目标域泛化机制</li>
+                </ul>
+              </div>
+
+              <div id="ensemble-content" class="content-details">
+                <h4>多源异构模型的高效汇聚方法</h4>
+                <ul>
+                  <li>动态类别均衡</li>
+                  <li>自适应参数汇聚</li>
+                  <li>异构模型汇聚体系</li>
+                </ul>
+              </div>
+            </div>
+            <div class="static-content-area">
+              <div class="static-content-header">
+                <h3 class="static-content-title">肿瘤精准诊断的跨机构可信模型构建及应用</h3>
+              </div>
+              <div class="static-content-image">
+                <img src="images/topic3.png" alt="Topic 3" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Two cards with headers -->
+      <div class="card-row">
+        <div class="card card-with-header">
+          <div class="card-header">
+            <div class="card-title">安全攻击的鲁棒检测与防御</div>
+          </div>
+          <div class="card-content">
+            <div class="security-grid">
+              <a href="topic4-1.html" class="security-placeholder" target="_self">
+                <figure class="topic4-figure topic4-1"></figure>
+                <span class="topic4-achivement-title">基于模型锁的通用视觉模型保护</span>
+              </a>
+              <a href="topic4-2.html" class="security-placeholder" target="_self">
+                <figure class="topic4-figure topic4-2"></figure>
+                <span class="topic4-achivement-title">基于不可学样本的分割数据保护</span>
+              </a>
+              <a href="topic4-3.html" class="security-placeholder" target="_self">
+                <figure class="topic4-figure topic4-3"></figure>
+                <span class="topic4-achivement-title">对抗攻击和后门投毒的检测工具集</span>
+              </a>
+              <a href="topic4-4.html" class="security-placeholder" target="_self">
+                <figure class="topic4-figure topic4-4"></figure>
+                <span class="topic4-achivement-title">面向视觉–语言模型的联邦对抗提示微调</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card card-with-header">
+          <div class="card-header">
+            <div class="card-title">超大规模学习系统优化及应用</div>
+          </div>
+          <div class="card-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logos">
+        <img src="images/fudan-logo.png" alt="Fudan University" />
+        <img src="images/shangjiao-logo.png" alt="Shanhai Jiaotong University" />
+        <img src="images/nanda-logo.png" alt="Nanjing University" />
+        <img src="images/zheda-logo.png" alt="Zhejiang University" />
+        <img src="images/jinandaxue-logo.png" alt="Jinan University" />
+        <img src="images/huawei-logo.png" alt="Huawei" />
+        <img src="images/baidu-logo.png" alt="Baidu" />
+        <img src="images/icbc-logo.png" alt="ICBC" />
+        <img src="images/yifangjianshu-logo.png" alt="Yifang Jianshu" />
+        <img src="images/huawei-cloud-logo.png" alt="Huawei Cloud" />
+      </div>
+      <div class="footer-text">© 2025 人工智能项目成果一体化展示平台</div>
+    </footer>
+
+    <script src="home.js"></script>
+  </body>
+</html>

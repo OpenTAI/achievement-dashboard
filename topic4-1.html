@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基于模型锁的通用视觉模型保护</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="topic4-1.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="page-title">基于模型锁的通用视觉模型保护</div>
+      <div class="user-section">
+        <div class="user-avatar">U</div>
+        <button class="login-btn" onclick="toggleDropdown()">登录</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" onclick="logout()">退出登录</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container-fluid">
+        <div class="intro-title d-flex justify-content-between align-items-center">
+          <div class="d-flex gap-2" style="width: 15%"></div>
+          <h2>Modellock：基于模型锁的通用视觉模型保护算法</h2>
+          <div class="qr-logos-row" style="width: 15%">
+            <div class="qr-code-section">
+              <div class="qr-code-container link" onclick="openLink('https://arxiv.org/pdf/2405.16285')">
+                <img src="images/topic4/achievement1/modellock_paper_qrcode.png" alt="UnSeg QR Code" />
+              </div>
+              <div class="qr-code-label">算法工具</div>
+            </div>
+          </div>
+        </div>
+        <!-- Introduction Section -->
+        <div class="introduction-section d-flex justify-content-center">
+          <div class="intro-text-container w-75">
+            <p class="intro-description">
+              本技术通过一段文本提示密钥实现模型主动锁定：利用扩散编辑迁移训练数据分布，使模型在无密钥时性能受损、仅在正确提示下恢复，从而完成由“被动验证”到“主动防护”的转变，在抵御模型提取与未授权使用时提供了更强的保护能力。
+            </p>
+          </div>
+        </div>
+
+        <div class="row main-columns">
+          <div class="col-md-4 main-column">
+            <!-- Left Column Content -->
+            <div class="column-header">
+              <div class="column-title">选择数据集</div>
+            </div>
+            <div class="dataset-selector mb-3">
+              <div class="dropdown mt-2">
+                <button
+                  class="btn btn-primary dropdown-toggle"
+                  type="button"
+                  id="datasetDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  stl10
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="datasetDropdown">
+                  <li>
+                    <div class="dropdown-item" onclick="selectDataset('stl10')"> stl10 </div>
+                  </li>
+                  <li>
+                    <div class="dropdown-item" onclick="selectDataset('cars')"> cars </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="image-grid">
+              <div class="image-item" onclick="selectImage(0)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(1)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(2)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(3)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(4)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(5)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(6)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(7)">
+                <img />
+              </div>
+              <div class="image-item" onclick="selectImage(8)">
+                <img />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 main-column d-flex flex-column">
+            <!-- Middle Column Content -->
+            <div class="column-header">
+              <div class="column-title">模型推理</div>
+            </div>
+            <div class="pipeline-container">
+              <div class="pipeline-section">
+                <div id="normalTrainingLabel" class="pipeline-label w-100">
+                  <span>普通模型推理</span>
+                </div>
+                <div class="pipeline-content">
+                  <div class="pipeline-image">
+                    <img id="normalTrainingImage" />
+                  </div>
+                  <div class="pipeline-arrow">
+                    <svg width="80" height="40" viewBox="0 0 80 40">
+                      <path
+                        d="M 10 20 L 65 20 M 60 15 L 65 20 L 60 25"
+                        stroke="#95a5a6"
+                        stroke-width="2"
+                        fill="none"
+                      />
+                    </svg>
+                  </div>
+                  <div class="pipeline-result">
+                    <div class="result-box">普通模型</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pipeline-section">
+                <div id="lockTrainingLabel" class="pipeline-label w-100">
+                  <span>上锁模型推理</span>
+                </div>
+                <div class="pipeline-content">
+                  <div class="pipeline-images-dual">
+                    <div class="pipeline-image-container">
+                      <div class="input-label">原始图像</div>
+                      <div class="pipeline-image small locked-input">
+                        <img id="lockedTrainingImage1" />
+                      </div>
+                    </div>
+                    <div class="pipeline-connection">
+                      <div class="connection-arrow down">
+                        <svg width="30" height="30" viewBox="0 0 30 40">
+                          <path
+                            d="M 15 5 L 15 30 M 10 25 L 15 30 L 20 25"
+                            stroke="#58d68d"
+                            stroke-width="2"
+                            fill="none"
+                          />
+                        </svg>
+                      </div>
+                      <div class="connection-text position-relative">
+                        <div class="image-overlay p-2">
+                          <!-- Content can be added here later -->
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            fill="currentColor"
+                            class="bi bi-key-fill"
+                            viewBox="0 0 16 16"
+                            style="color: #ff8c00"
+                          >
+                            <path
+                              d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"
+                            />
+                          </svg>
+                          <span class="text-center" style="font-size: 12px">密钥提示</span>
+                        </div>
+                        <span>扩散编辑模型</span>
+                      </div>
+                      <div class="connection-arrow down">
+                        <svg width="30" height="30" viewBox="0 0 30 40">
+                          <path
+                            d="M 15 5 L 15 30 M 10 25 L 15 30 L 20 25"
+                            stroke="#7dcea0"
+                            stroke-width="2"
+                            fill="none"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="pipeline-image-container">
+                      <div class="pipeline-image small unlocked-input">
+                        <img id="lockedTrainingImage2" />
+                      </div>
+                      <div class="input-label">编辑图像</div>
+                    </div>
+                  </div>
+                  <div class="pipeline-arrows-dual">
+                    <div class="pipeline-arrow locked-arrow">
+                      <div class="arrow-label">无法解锁</div>
+                      <svg
+                        width="80"
+                        height="40"
+                        viewBox="0 0 80 40"
+                        style="transform: rotate(45deg)"
+                      >
+                        <path
+                          d="M 10 20 L 65 20 M 60 15 L 65 20 L 60 25"
+                          stroke="#58d68d"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
+                    </div>
+                    <div class="pipeline-arrow unlocked-arrow">
+                      <svg
+                        width="80"
+                        height="40"
+                        viewBox="0 0 80 40"
+                        style="transform: rotate(-45deg)"
+                      >
+                        <path
+                          d="M 10 20 L 65 20 M 60 15 L 65 20 L 60 25"
+                          stroke="#7dcea0"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
+                      <div class="arrow-label">成功解锁</div>
+                    </div>
+                  </div>
+                  <div class="pipeline-result">
+                    <div class="result-box locked">上锁模型</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 main-column">
+            <!-- Right Column Content -->
+            <div class="column-header">
+              <div class="column-title">性能展示</div>
+            </div>
+
+            <div class="charts-container">
+              <!-- Chart aligned with normal training -->
+              <div class="chart-section normal-training-chart">
+                <div class="chart-header">
+                  <h6 class="chart-title">原始模型性能</h6>
+                </div>
+                <div>
+                  <div class="chart-container" id="normalChart"></div>
+                </div>
+              </div>
+
+              <div class="chart-divider"></div>
+
+              <!-- Charts aligned with locked training -->
+              <div class="chart-section locked-training-charts">
+                <div class="chart-header">
+                  <h6 class="chart-title">上锁模型性能</h6>
+                </div>
+
+                <div class="stacked-charts">
+                  <div>
+                    <div class="chart-container small" id="lockedChart1"></div>
+                  </div>
+                  <div>
+                    <div class="chart-container small" id="lockedChart2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logos">
+        <img src="images/fudan-logo.png" alt="Fudan University" />
+        <img src="images/shangjiao-logo.png" alt="Shanhai Jiaotong University" />
+        <img src="images/nanda-logo.png" alt="Nanjing University" />
+        <img src="images/zheda-logo.png" alt="Zhejiang University" />
+        <img src="images/jinandaxue-logo.png" alt="Jinan University" />
+        <img src="images/huawei-logo.png" alt="Huawei" />
+        <img src="images/baidu-logo.png" alt="Baidu" />
+        <img src="images/icbc-logo.png" alt="ICBC" />
+        <img src="images/yifangjianshu-logo.png" alt="Yifang Jianshu" />
+        <img src="images/huawei-cloud-logo.png" alt="Huawei Cloud" />
+      </div>
+      <div class="footer-text">© 2025 人工智能项目成果一体化展示平台</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/echarts.min.js"></script>
+    <script src="topic4-1.js"></script>
+  </body>
+</html>

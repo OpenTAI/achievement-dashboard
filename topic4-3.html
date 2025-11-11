@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>对抗攻击和后门投毒的检测工具集</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="topic4-3.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="page-title">对抗攻击和后门投毒的检测工具集</div>
+      <div class="user-section">
+        <div class="user-avatar">U</div>
+        <button class="login-btn" onclick="toggleDropdown()">登录</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" onclick="logout()">退出登录</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container-fluid">
+        <div class="intro-title d-flex justify-content-between align-items-center">
+          <div class="d-flex gap-2" style="width: 15%"></div>
+          <h2>构建针对对抗攻击和后门投毒的检测工具集</h2>
+          <div class="qr-logos-row" style="width: 15%">
+            <div class="qr-code-section">
+              <div
+                class="qr-code-container link"
+                onclick="openLink('https://github.com/OpenTAI/taiadv/tree/main/taiadv/detection')"
+              >
+                <img src="images/topic4/achievement3/github-qr-code.png" alt="UnSeg QR Code" />
+              </div>
+              <div class="qr-code-label">对抗攻击检测算法</div>
+            </div>
+            <div class="qr-code-section">
+              <div
+                class="qr-code-container link"
+                onclick="openLink('https://github.com/HanxunH/CognitiveDistillation')"
+              >
+                <img src="images/topic4/achievement3/github-qr-code2.png" alt="UnSeg QR Code" />
+              </div>
+              <div class="qr-code-label">后台投毒检测算法</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introduction Section -->
+        <div class="introduction-section d-flex">
+          <div class="intro-left-area w-50">
+            <h5>对抗攻击检测工具集</h5>
+            <ul>
+              <li><span class="standout">15种</span>对抗攻击算法</li>
+              <li><span class="standout">10种</span>对抗攻检测算法</li>
+              <li>覆盖MNIST，SVHN和CIFAR-10等标准数据集</li>
+              <li>适用于CNN、ResNet、ViTs等各类视觉模型</li>
+              <li><span class="standout">平均检测AUC超过96%</span></li>
+            </ul>
+          </div>
+
+          <div class="intro-right-area w-50">
+            <h5>后门投毒检测工具集</h5>
+            <ul>
+              <li><span class="standout">12种</span>后门攻击算法</li>
+              <li><span class="standout">7种</span>后门投毒检测算法</li>
+              <li>覆盖CIFAR-10、GTSRB、ImageNet等标准数据集</li>
+              <li>适用于CNN、ResNet、ViTs等各类视觉模型</li>
+              <li><span class="standout">平均检测AUC超过92%</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row main-columns">
+          <div class="col-md-4 main-column d-flex flex-column justify-content-start">
+            <!-- Left Column Content -->
+            <div class="column-header">
+              <div class="column-title">数据输入</div>
+            </div>
+
+            <div class="p-4 column-subtitle" id="imagenet-dataset-intro">
+              <span class="fw-bold">ImageNet</span>
+              是一个基于 WordNet 构建的超大规模图像数据集，包含约 1,400 万张图像与 2 万多个语义类别；常用的 ImageNet-1K（ILSVRC 2012 子集），覆盖 1,000 类，数据划分约为 128 万训练图、5 万验证图和 10 万测试图。
+            </div>
+
+            <div class="p-4 column-subtitle d-none" id="network-dataset-intro">
+              <span class="fw-bold">UNSW-NB15</span>
+              数据集是一个现代网络入侵检测研究的数据集，生成于真实的网络流量环境，包含多种正常流量和恶意流量。与传统数据集（如
+              KDD99 和 NSL-KDD）相比，它更真实地反映了当前的网络环境和威胁场景。
+              主要数据项包括：流量的基本信息（协议类型、字节数等）、内容特征（如请求参数）、统计特征（如连接数、分布统计）、以及流量类别（正常或攻击类型）。
+            </div>
+
+            <!-- 3x3 Image Grid -->
+            <div class="image-grid-3x3" id="imageGrid">
+              <!-- Images will be populated by JavaScript -->
+            </div>
+
+            <!-- Single Large Image (hidden by default) -->
+            <div class="single-image-container" id="singleImageContainer" style="display: none;">
+              <div class="single-image-item">
+                <img id="singleNetworkImage" src="images/topic4/achievement3/dataset/network-attack.png" alt="Network Traffic Data" />
+                <div class="single-image-label">UNSW-NB15 网络流量数据</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 main-column d-flex flex-column justify-content-between">
+            <!-- Middle Column Content -->
+            <div class="column-header">
+              <div class="column-title">算法处理</div>
+            </div>
+
+            <!-- Tab Interface -->
+            <div class="tab-container">
+              <!-- Tab Headers -->
+              <div class="tab-headers">
+                <button class="tab-header active" onclick="switchTab('attack-tab')">
+                  对抗攻击
+                </button>
+                <button class="tab-header" onclick="switchTab('backdoor-tab')">后门投毒攻击</button>
+                <button class="tab-header" onclick="switchTab('network-tab')">网络攻击</button>
+              </div>
+
+              <!-- Tab Contents -->
+              <div class="tab-content">
+                <!-- Attack Tab -->
+                <div class="tab-pane active" id="attack-tab">
+                  <!-- Compact Layout with Images and Controls -->
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">攻击流程</span>
+                    <div class="d-flex justify-content-between my-3">
+                      <!-- Top Row: Images with Plus Symbol -->
+                      <div class="processing-images">
+                        <div class="processing-image-item">
+                          <img id="selectedImage" src="" alt="Selected Image" />
+                          <div class="image-label">原始图像</div>
+                        </div>
+
+                        <div class="plus-symbol">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-plus-lg"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
+                            />
+                          </svg>
+                        </div>
+
+                        <div class="processing-image-item">
+                          <img src="images/topic4/achievement3/noise.png" alt="Noise" />
+                          <div class="image-label">对抗噪声</div>
+                        </div>
+                      </div>
+
+                      <!-- Bottom Row: Controls -->
+                      <div
+                        class="attack-controls d-flex flex-column justify-content-between align-items-center w-50"
+                      >
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-outline-success dropdown-toggle compact-dropdown-btn w-100 text-truncate"
+                            type="button"
+                            id="attackMethodDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            FGSM
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="attackMethodDropdown">
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('FGSM')"
+                                >FGSM</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('BIM')"
+                                >BIM</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('PGD')"
+                                >PGD</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('CW')"
+                                >CW</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('DeepFool')"
+                                >DeepFool</span
+                              >
+                            </li>
+                            <li>
+                              <span
+                                class="dropdown-item"
+                                onclick="selectAttackMethod('Spatial Transformation Attack')"
+                                >Spatial Transformation Attack</span
+                              >
+                            </li>
+                            <li>
+                              <span
+                                class="dropdown-item"
+                                onclick="selectAttackMethod('Square attack')"
+                                >Square attack</span
+                              >
+                            </li>
+                            <li>
+                              <span
+                                class="dropdown-item"
+                                onclick="selectAttackMethod('Adversarial Patch')"
+                                >Adversarial Patch</span
+                              >
+                            </li>
+                          </ul>
+                        </div>
+
+                        <button
+                          class="btn compact-attack-btn w-100"
+                          type="button"
+                          id="attackButton"
+                          onclick="performAttack()"
+                        >
+                          对抗攻击
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vertical Arrow -->
+                  <div class="pipeline-arrow-container">
+                    <div class="pipeline-arrow">
+                      <svg width="60" height="30" viewBox="0 0 60 30">
+                        <path
+                          d="M 30 5 L 30 25 M 25 20 L 30 25 L 35 20"
+                          stroke="#28a745"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">检测流程</span>
+                    <div class="defense-process-image-container my-3">
+                      <div class="defense-images-flow">
+                        <div class="defense-image-item">
+                          <img
+                            src="images/topic4/achievement3/defense-process.png"
+                            alt="Attack Result"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Backdoor Tab -->
+                <div class="tab-pane" id="backdoor-tab">
+                  <!-- Compact Layout with Images and Controls -->
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">攻击流程</span>
+                    <div class="d-flex justify-content-around my-3">
+                      <!-- Top Row: Images with Plus Symbol -->
+                      <div class="processing-images">
+                        <div class="processing-image-item backdoor">
+                          <img id="selectedImageBackdoor" src="" alt="Selected Image" />
+                          <img
+                            src="images/topic4/achievement3/backdoor-noice.png"
+                            alt="Backdoor Trigger"
+                            class="backdoor-trigger"
+                          />
+                        </div>
+                      </div>
+
+                      <!-- Bottom Row: Controls -->
+                      <div
+                        class="attack-controls d-flex flex-column justify-content-between align-items-center"
+                      >
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-outline-success dropdown-toggle compact-dropdown-btn w-100 text-truncate"
+                            type="button"
+                            id="backdoorMethodDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            BadNets
+                          </button>
+
+                          <ul class="dropdown-menu" aria-labelledby="backdoorMethodDropdown">
+                            <!-- Backdoor methods will be added here -->
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('BadNets')"
+                                >BadNets</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Blend')"
+                                >Blend</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('CL')"
+                                >CL</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('DFST')"
+                                >DFST</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Dynamic')"
+                                >Dynamic</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('FC')"
+                                >FC</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('SIG')"
+                                >SIG</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Smooth')"
+                                >Smooth</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Nashville')"
+                                >Nashville</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Trojan')"
+                                >Trojan</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('WaNet')"
+                                >WaNet</span
+                              >
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('ISSBA')"
+                                >ISSBA</span
+                              >
+                            </li>
+                          </ul>
+                        </div>
+
+                        <button
+                          class="btn compact-attack-btn"
+                          type="button"
+                          id="backdoorButton"
+                          onclick="performAttack()"
+                        >
+                          后门&投毒攻击
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vertical Arrow -->
+                  <div class="pipeline-arrow-container">
+                    <div class="pipeline-arrow">
+                      <svg width="60" height="30" viewBox="0 0 60 30">
+                        <path
+                          d="M 30 5 L 30 25 M 25 20 L 30 25 L 35 20"
+                          stroke="#28a745"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">检测流程</span>
+                    <div class="defense-process-image-container my-3">
+                      <div class="defense-images-flow">
+                        <div class="defense-image-item">
+                          <img
+                            src="images/topic4/achievement3/backdoor-defense.png"
+                            alt="Defense Input"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Network Attack Tab -->
+                <div class="tab-pane" id="network-tab">
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">攻击流程</span>
+                    <div class="d-flex justify-content-around my-3">
+                      <!-- Network Attack Images -->
+
+                      <!-- Network Attack Controls -->
+                      <div class="attack-controls d-flex flex-column justify-content-between align-items-center">
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-outline-success dropdown-toggle compact-dropdown-btn w-100 text-truncate"
+                            type="button"
+                            id="networkMethodDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            Fuzzers
+                          </button>
+
+                          <ul class="dropdown-menu" aria-labelledby="networkMethodDropdown">
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Fuzzers')">Fuzzers</span>
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Analysis')">Analysis</span>
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('Backdoors')">Backdoors</span>
+                            </li>
+                            <li>
+                              <span class="dropdown-item" onclick="selectAttackMethod('DoS')">DoS</span>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <button
+                          class="btn compact-attack-btn"
+                          type="button"
+                          id="networkButton"
+                          onclick="performAttack()"
+                        >
+                          网络攻击
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vertical Arrow -->
+                  <div class="pipeline-arrow-container">
+                    <div class="pipeline-arrow">
+                      <svg width="60" height="30" viewBox="0 0 60 30">
+                        <path
+                          d="M 30 5 L 30 25 M 25 20 L 30 25 L 35 20"
+                          stroke="#28a745"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div class="image-processing-container my-2 px-4 py-3 d-flex flex-column">
+                    <span class="mt-2 split-header">检测流程</span>
+                    <div class="defense-process-image-container my-3">
+                      <div class="defense-images-flow">
+                        <div class="defense-image-item">
+                          <img
+                            src="images/topic4/achievement3/network-defense.png"
+                            alt="Network Defense"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 main-column d-flex flex-column justify-content-between">
+            <!-- Right Column Content -->
+            <div class="column-header">
+              <div class="column-title">结果展示</div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="results-container">
+              <!-- Attack Result Image -->
+              <div class="result-image-section" id="result-image-section">
+                <div class="result-header">
+                  <div class="result-title">攻击结果</div>
+                  <div class="result-subtitle">生成的对抗样本</div>
+                </div>
+                <div class="result-image-container">
+                  <img id="attackResultImage" src="" alt="Attack Result" class="result-image" />
+                  <div class="result-overlay">
+                    <div class="result-status">已生成对抗样本</div>
+                  </div>
+                  <div class="result-loading-overlay" id="resultLoadingOverlay">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">生成中...</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Defense Success Rates Chart -->
+              <div class="chart-section collapsed" id="defenseChartSection">
+                <div class="chart-header">
+                  <div class="result-title">检测成功率</div>
+                  <div class="result-subtitle">各防御方法的检测准确率对比</div>
+                </div>
+                <div class="chart-container">
+                  <div id="defenseChart" class="chart-placeholder">选择攻击方法进行对抗攻击</div>
+                  <div class="chart-loading-overlay" id="chartLoadingOverlay">
+                    <div class="chart-loading-spinner"></div>
+                    <div class="chart-loading-text">分析中...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logos">
+        <img src="images/fudan-logo.png" alt="Fudan University" />
+        <img src="images/shangjiao-logo.png" alt="Shanhai Jiaotong University" />
+        <img src="images/nanda-logo.png" alt="Nanjing University" />
+        <img src="images/zheda-logo.png" alt="Zhejiang University" />
+        <img src="images/jinandaxue-logo.png" alt="Jinan University" />
+        <img src="images/huawei-logo.png" alt="Huawei" />
+        <img src="images/baidu-logo.png" alt="Baidu" />
+        <img src="images/icbc-logo.png" alt="ICBC" />
+        <img src="images/yifangjianshu-logo.png" alt="Yifang Jianshu" />
+        <img src="images/huawei-cloud-logo.png" alt="Huawei Cloud" />
+      </div>
+      <div class="footer-text">© 2025 人工智能项目成果一体化展示平台</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/echarts.min.js"></script>
+    <script src="topic4-3.js"></script>
+  </body>
+</html>

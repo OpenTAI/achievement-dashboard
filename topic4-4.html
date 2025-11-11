@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基于联邦提示微调的对抗防御方法</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="topic4-4.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="page-title">基于联邦提示微调的对抗防御方法</div>
+      <div class="user-section">
+        <div class="user-avatar">U</div>
+        <button class="login-btn" onclick="toggleDropdown()">登录</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <div class="dropdown-item" onclick="logout()">退出登录</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container-fluid">
+        <div class="intro-title d-flex justify-content-between align-items-center">
+          <div class="d-flex gap-2" style="width: 15%"></div>
+          <h2>FedAPT: 基于联邦提示微调的对抗防御方法</h2>
+          <div class="qr-logos-row" style="width: 15%">
+            <div class="qr-code-section">
+              <div class="qr-code-container link" onclick="openLink('https://arxiv.org/abs/2509.06992')">
+                <img src="images/topic4/achievement4/paper-qr-code.png" alt="Security QR Code" />
+              </div>
+              <div class="qr-code-label">论文详情</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introduction Section -->
+        <div class="introduction-section d-flex justify-content-center">
+          <div class="intro-text-container w-75">
+            <p class="intro-description">
+              FedAPT
+              在国际上率先将联邦提示微调与对抗训练相结合，提出了一种高效的多模态对抗防御范式。该方法通过提示词微调实现联邦学习中的鲁棒优化，显著提升了联邦学习在视觉–语言模型上的对抗鲁棒性与泛化能力。
+            </p>
+          </div>
+        </div>
+
+        <div class="row main-columns">
+          <div class="col-md-4 main-column">
+            <!-- Left Column Content -->
+            <div class="column-header">
+              <div class="column-title">选择数据集</div>
+            </div>
+            <div class="intro-text-block mb-4">
+              <p>
+                联邦学习中，客户端只见本地数据，整体呈现 non-IID。我们用“标签不重叠”刻画异质性：把类别分给不同客户端，使其各自仅含少量且互不重叠的类；每端类别越少，异质性越高。
+              </p>
+            </div>
+            <div class="dataset-selector mb-3">
+              <div class="dropdown">
+                <button
+                  class="btn btn-primary dropdown-toggle"
+                  type="button"
+                  id="datasetDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  ImageNet
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="datasetDropdown">
+                  <li>
+                    <div class="dropdown-item" onclick="selectDataset('ImageNet')">ImageNet</div>
+                  </li>
+                  <li>
+                    <div class="dropdown-item" onclick="selectDataset('Caltech01')">Caltech01</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="image-grid-small mb-4">
+              <div class="image-item" onclick="selectImage(0)">
+                <img />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 main-column d-flex flex-column">
+            <!-- Middle Column Content -->
+            <div class="column-header">
+              <div class="column-title">算法处理</div>
+            </div>
+            <div class="algorithm-content">
+              <div class="algorithm-image-container">
+                <pre class="mermaid d-none" id="flowChart">
+                  flowchart TB
+                    subgraph 客户端1
+                      direction TB
+                      Input1[文本输入] s0@--> TextEncoder1[文本编码器]
+                      PromptGenerator1 s1@--> ImageEncoder1[图像编码器]
+                      TextEncoder1 s2@<--> PromptGenerator1@{ shape: rounded, label: "Prompt生成器" }
+                      TextEncoder1 s3@--> FramedCircle1@{ shape: framed-circle }
+                      ImageEncoder1 s4@--> FramedCircle1
+                      Image1@{ img: "http://127.0.0.1:8080/images/topic4/achievement4/pipeline-chart-image1.png", pos: "t", w: 60, h: 60, constraint: "on" }
+                      Image1 s5@--> ImageEncoder1
+                    end
+                    subgraph 客户端N
+                      direction TB
+                      Input2[文本输入] sn0@--> TextEncoder2[文本编码器]
+                      PromptGenerator2 sn1@--> ImageEncoder2[图像编码器]
+                      TextEncoder2 sn2@<--> PromptGenerator2@{ shape: rounded, label: "Prompt生成器" }
+                      TextEncoder2 sn3@--> FramedCircle2@{ shape: framed-circle }
+                      ImageEncoder2 sn4@--> FramedCircle2
+                      Image2@{ img: "http://127.0.0.1:8080/images/topic4/achievement4/pipeline-chart-image2.png", pos: "t", w: 60, h: 60, constraint: "on" }
+                      Image2 sn5@--> ImageEncoder2
+                    end
+                    Server[服务器] e1@ <==> 客户端1
+                    e1@{ curve: stepAfter, animation: slow }
+                    Server e3@ <==> 客户端N
+                    e3@{ curve: stepAfter, animation: slow }
+                    s0@{ animation: slow } 
+                    s1@{ curve: stepAfter, animation: slow } 
+                    s2@{ curve: stepBefore, animation: slow } 
+                    s3@{ curve: stepBefore, animation: slow }
+                    s4@{ curve: stepBefore, animation: slow }
+                    s5@{ curve: stepAfter, animation: slow }
+                    sn0@{ animation: slow } 
+                    sn1@{ curve: stepAfter, animation: slow } 
+                    sn2@{ curve: stepBefore, animation: slow } 
+                    sn3@{ curve: stepBefore, animation: slow }
+                    sn4@{ curve: stepBefore, animation: slow }
+                    sn5@{ curve: stepAfter, animation: slow }
+                </pre>
+              </div>
+              <div class="algorithm-explanation">
+                <p>
+                  该方法设计了类别感知的提示生成器，为客户端引入全局类别语义，并在文本与视觉提示之间建立跨模态桥梁，从而显著提升联邦学习的对抗鲁棒性，有效缓解数据异质性的影响。
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 main-column">
+            <!-- Right Column Content -->
+            <div class="column-header">
+              <div class="column-title">鲁棒性展示</div>
+            </div>
+
+            <!-- Top Section -->
+            <div class="result-section top-section" id="imagenetRobustChartSection">
+              <div class="result-header">
+                <h6 class="result-title">Imagenet 数据集鲁棒性</h6>
+                <div class="result-subtitle">数据异质性中客户端的类别量为10</div>
+              </div>
+              <div class="chart-container" id="imagenetRobustChart"></div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="result-section bottom-section d-none" id="caltechRobustChartSection">
+              <div class="result-header">
+                <h6 class="result-title">Caltech01 数据集鲁棒性</h6>
+                <div class="result-subtitle">数据异质性中客户端的类别量为10</div>
+              </div>
+              <div class="chart-container" id="caltechRobustChart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logos">
+        <img src="images/fudan-logo.png" alt="Fudan University" />
+        <img src="images/shangjiao-logo.png" alt="Shanhai Jiaotong University" />
+        <img src="images/nanda-logo.png" alt="Nanjing University" />
+        <img src="images/zheda-logo.png" alt="Zhejiang University" />
+        <img src="images/jinandaxue-logo.png" alt="Jinan University" />
+        <img src="images/huawei-logo.png" alt="Huawei" />
+        <img src="images/baidu-logo.png" alt="Baidu" />
+        <img src="images/icbc-logo.png" alt="ICBC" />
+        <img src="images/yifangjianshu-logo.png" alt="Yifang Jianshu" />
+        <img src="images/huawei-cloud-logo.png" alt="Huawei Cloud" />
+      </div>
+      <div class="footer-text">© 2025 人工智能项目成果一体化展示平台</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/echarts.min.js"></script>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+
+      const flowChart = document.getElementById("flowChart");
+      flowChart.classList.remove("d-none");
+    </script>
+    <script src="topic4-4.js"></script>
+  </body>
+</html>
